@@ -14,7 +14,7 @@ if [ ! -e "$TARGET" ]; then
     if [ -n "${CI_JOB_TOKEN:-}" ]; then
         HEADER=$(printf 'gitlab-ci-token:%s' "$CI_JOB_TOKEN" | base64 | tr -d '\r\n')
         # Older canonical Git images predate GIT_CONFIG_COUNT support.
-        PARAMETERS="${GIT_CONFIG_PARAMETERS:-} 'http.https://git.tak.gov/.extraHeader=Authorization: Basic $HEADER'"
+        PARAMETERS="${GIT_CONFIG_PARAMETERS:+$GIT_CONFIG_PARAMETERS }'http.https://git.tak.gov/.extraHeader=Authorization: Basic $HEADER'"
         env GIT_TERMINAL_PROMPT=0 "GIT_CONFIG_PARAMETERS=$PARAMETERS" \
             git clone --quiet --no-checkout "$URL" "$TARGET"
     else

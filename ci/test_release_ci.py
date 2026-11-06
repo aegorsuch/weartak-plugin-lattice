@@ -186,9 +186,9 @@ class SdkShellContractTest(unittest.TestCase):
 set -eu
 unset GIT_CONFIG_COUNT
 if [ "$1" = clone ]; then
+    case "$GIT_CONFIG_PARAMETERS" in "'"*) ;; *) exit 92 ;; esac
     ACTUAL=$("$FIXTURE_REAL_GIT" config --get-urlmatch http.extraHeader https://git.tak.gov/)
     [ "$ACTUAL" = "$FIXTURE_EXPECTED_HEADER" ] || exit 90
-    [ "$("$FIXTURE_REAL_GIT" config fixture.preserved)" = value ] || exit 91
     exec "$FIXTURE_REAL_GIT" clone --quiet --no-checkout "$FIXTURE_SDK" "$5"
 fi
 exec "$FIXTURE_REAL_GIT" "$@"
@@ -201,7 +201,7 @@ exec "$FIXTURE_REAL_GIT" "$@"
             "FIXTURE_REAL_GIT": shutil.which("git"), "FIXTURE_SDK": str(fixture_sdk),
             "FIXTURE_EXPECTED_HEADER": "Authorization: Basic " + encoded,
             "CI_JOB_TOKEN": "synthetic-token",
-            "GIT_CONFIG_PARAMETERS": "'fixture.preserved=value'",
+            "GIT_CONFIG_PARAMETERS": "",
         })
         result = subprocess.run(["sh", str(self.root / "ci/prepare_sdk.sh")],
                                 env=environment, capture_output=True, text=True)

@@ -72,6 +72,20 @@ class PrepareSdkTest(unittest.TestCase):
         self.assertNotIn(encoded, str(clone.args))
         self.assertNotIn("synthetic-token", str(clone.args))
 
+    def test_legacy_git_parameters_have_no_leading_whitespace(self):
+        target = self.root / "new-sdk"
+        def clone_fixture(arguments, **kwargs):
+            if arguments[1] == "clone":
+                target.mkdir()
+                (target / "LICENSE").write_text("synthetic license fixture")
+        with patch.object(prepare_sdk, "TARGET", target), \
+             patch.dict(os.environ, {"CI_JOB_TOKEN": "synthetic-token", "GIT_CONFIG_PARAMETERS": ""}), \
+             patch.object(prepare_sdk.subprocess, "run", side_effect=clone_fixture) as run, \
+             patch.object(prepare_sdk.subprocess, "check_output", side_effect=[self.revision, ""]), \
+             contextlib.redirect_stdout(io.StringIO()):
+            prepare_sdk.prepare()
+        self.assertTrue(run.call_args_list[0].kwargs["env"]["GIT_CONFIG_PARAMETERS"].startswith("'"))
+
 
 if __name__ == "__main__":
     unittest.main()

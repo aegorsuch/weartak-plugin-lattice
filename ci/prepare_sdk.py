@@ -22,8 +22,8 @@ def prepare():
         if environment.get("CI_JOB_TOKEN"):
             authorization = base64.b64encode(("gitlab-ci-token:" + environment["CI_JOB_TOKEN"]).encode()).decode()
             existing = environment.get("GIT_CONFIG_PARAMETERS", "")
-            environment["GIT_CONFIG_PARAMETERS"] = existing + (
-                " 'http.https://git.tak.gov/.extraHeader=Authorization: Basic " + authorization + "'"
+            environment["GIT_CONFIG_PARAMETERS"] = (existing + " " if existing else "") + (
+                "'http.https://git.tak.gov/.extraHeader=Authorization: Basic " + authorization + "'"
             )
         subprocess.run(["git", "clone", "--quiet", "--no-checkout", URL, str(TARGET)], check=True, env=environment)
         subprocess.run(["git", "-C", str(TARGET), "checkout", "--quiet", "--detach", revision], check=True)
