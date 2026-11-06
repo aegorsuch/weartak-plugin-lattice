@@ -1,0 +1,15 @@
+{
+  "eventType": "EVENT_TYPE_PREEXISTING",
+  "time": "2026-01-01T00:00:00Z",
+  "entity": {
+    "entityId": "synthetic-point-1",
+    "isLive": true,
+    "expiryTime": "2026-01-01T00:01:00Z",
+    "aliases": {"name": "Synthetic point"},
+    "location": {"position": {"latitudeDegrees": 0.0, "longitudeDegrees": 0.0}},
+    "milView": {"disposition": "DISPOSITION_UNKNOWN", "environment": "ENVIRONMENT_SURFACE"},
+    "ontology": {"template": "TEMPLATE_TRACK", "platformType": "Synthetic_Vessel"},
+    "provenance": {"sourceUpdateTime": "2026-01-01T00:00:00Z"},
+    "indicators": {"simulated": true}
+  }
+}
