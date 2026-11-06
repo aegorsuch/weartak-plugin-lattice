@@ -329,8 +329,10 @@ Pinned WearTAK SDK's original code has the same express grant in its canonical
 README/LICENSE. Third-party components retain their own licenses and notices;
 see [NOTICE](NOTICE) and [third_party/Apache-2.0.txt](third_party/Apache-2.0.txt).
 
-No proprietary Anduril SDK code, generated bindings, trademarks/assets, or
-runtime binaries are copied or bundled. Independent REST implementation does
+No proprietary Anduril SDK code, generated bindings, or runtime binaries are
+bundled. The authorized company icon is separately attributed in `NOTICE`,
+excluded from the project's GPL grant, and grants no general trademark rights.
+Independent REST implementation does
 not waive service/data terms. Anduril license sections 3.1/3.4 restrict its SDK
 grant and redistribution, section 3.5 preserves open-source component grants,
 and section 8 requires authorized data use and explicit user consent.
