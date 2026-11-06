@@ -21,6 +21,8 @@
         </activity>
         <service android:name=".LatticePluginService" android:exported="true"
             android:permission="com.weartak.plugin.permission.BIND_PLUGIN">
+            <meta-data android:name="com.weartak.plugin.MENU_SUBTITLE"
+                android:value="@string/plugin_menu_subtitle" />
             <intent-filter>
                 <action android:name="com.weartak.plugin.action.PLUGIN_SERVICE" />
                 <category android:name="android.intent.category.DEFAULT" />

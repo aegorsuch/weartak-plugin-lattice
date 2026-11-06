@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Lattice</string>
+    <string name="plugin_menu_subtitle">Unfunded Request</string>
     <string name="plugin_description">Read-only Lattice point tracks. Foreground only; no map or outbound reporting.</string>
     <string name="read_only_notice">Read-only point tracks. No position sharing, commands, or map injection. Reception stops when this screen closes.</string>
     <string name="endpoint">HTTPS endpoint</string>
