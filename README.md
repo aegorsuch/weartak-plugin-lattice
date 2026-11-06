@@ -122,8 +122,10 @@ GPL, project notices, and Apache license text are packaged under APK
 `.gitlab-ci.yml` builds/tests/lints but does not publish APKs. CI's ephemeral
 job token authenticates only to canonical TAK.gov SDK reads via a child-process
 Git header, not a credential-bearing URL or persistent Git config. SDK project
-must authorize this project's job-token access. Runner image must provide
-Python 3, Git, JDK 17, and Android tools. Configuration validation alone does
+must authorize this project's job-token access. The canonical Gradle launcher
+does not provide Python 3; CI installs it with apt in the ephemeral job container
+when absent. The image must provide apt, Git, JDK 17, and Android tools.
+Configuration validation alone does
 not verify runner execution or SDK source access.
 
 SDK project 6927 is private with inbound job-token scope enabled. With explicit
