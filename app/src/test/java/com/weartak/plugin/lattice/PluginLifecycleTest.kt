@@ -2,6 +2,7 @@
 package com.weartak.plugin.lattice
 
 import android.content.Intent
+import android.content.ComponentName
 import android.os.Binder
 import android.os.Bundle
 import android.os.IBinder
@@ -92,6 +93,28 @@ class PluginLifecycleTest {
             assertFalse(capabilities.deviceIntegration)
             assertTrue(service.plugin.getSettingsValues().isEmpty)
             assertTrue(service.plugin.getMainUiState().isEmpty)
+        } finally { controller.destroy() }
+    }
+
+    @Test fun listingSubtitleIsExactAndPluginDescriptionKeepsOperationalScope() {
+        val controller = Robolectric.buildService(LatticePluginService::class.java).create()
+        try {
+            val service = controller.get()
+            val component = ComponentName(service, LatticePluginService::class.java)
+            val info = service.packageManager.getServiceInfo(
+                component,
+                android.content.pm.PackageManager.ComponentInfoFlags.of(
+                    android.content.pm.PackageManager.GET_META_DATA.toLong(),
+                ),
+            )
+            assertEquals(
+                "Unfunded Request",
+                info.metaData?.getString("com.weartak.plugin.MENU_SUBTITLE"),
+            )
+            assertEquals(
+                "Read-only Lattice point tracks. Foreground only; no map or outbound reporting.",
+                service.plugin.getPluginInfo().description,
+            )
         } finally { controller.destroy() }
     }
 
