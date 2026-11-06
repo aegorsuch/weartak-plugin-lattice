@@ -20,11 +20,11 @@ def prepare():
         environment = os.environ.copy()
         environment["GIT_TERMINAL_PROMPT"] = "0"
         if environment.get("CI_JOB_TOKEN"):
-            index = int(environment.get("GIT_CONFIG_COUNT", "0"))
-            environment["GIT_CONFIG_COUNT"] = str(index + 1)
-            environment[f"GIT_CONFIG_KEY_{index}"] = "http.https://git.tak.gov/.extraHeader"
             authorization = base64.b64encode(("gitlab-ci-token:" + environment["CI_JOB_TOKEN"]).encode()).decode()
-            environment[f"GIT_CONFIG_VALUE_{index}"] = "Authorization: Basic " + authorization
+            existing = environment.get("GIT_CONFIG_PARAMETERS", "")
+            environment["GIT_CONFIG_PARAMETERS"] = existing + (
+                " 'http.https://git.tak.gov/.extraHeader=Authorization: Basic " + authorization + "'"
+            )
         subprocess.run(["git", "clone", "--quiet", "--no-checkout", URL, str(TARGET)], check=True, env=environment)
         subprocess.run(["git", "-C", str(TARGET), "checkout", "--quiet", "--detach", revision], check=True)
     actual = subprocess.check_output(["git", "-C", str(TARGET), "rev-parse", "HEAD"], text=True).strip()

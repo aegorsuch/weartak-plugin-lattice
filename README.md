@@ -128,7 +128,8 @@ The equivalent `ci/prepare_sdk.sh` entry point avoids installing packages into
 that image. Both preparation paths enforce the same source pin, clean checkout,
 and license; Android `preBuild` independently repeats these checks. CI's
 ephemeral job token authenticates only to canonical TAK.gov SDK reads via a
-child-process Git header, not a credential-bearing URL or persistent Git config.
+child-process Git header through old-Git-compatible `GIT_CONFIG_PARAMETERS`,
+not a credential-bearing URL or persistent Git config.
 No SDK source is uploaded as a job artifact. The Gradle image must provide Git,
 JDK 17, and Android tools. Configuration validation alone does not verify runner
 execution or SDK source access.

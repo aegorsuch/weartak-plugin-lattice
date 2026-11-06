@@ -12,12 +12,10 @@ if [ ! -e "$TARGET" ]; then
     mkdir -p "$ROOT/.dependencies"
     URL=https://git.tak.gov/weartak-plugins/weartak-plugin-sdk.git
     if [ -n "${CI_JOB_TOKEN:-}" ]; then
-        INDEX=${GIT_CONFIG_COUNT:-0}
-        case "$INDEX" in ''|*[!0-9]*) echo "Invalid Git configuration count." >&2; exit 1 ;; esac
         HEADER=$(printf 'gitlab-ci-token:%s' "$CI_JOB_TOKEN" | base64 | tr -d '\r\n')
-        env GIT_TERMINAL_PROMPT=0 "GIT_CONFIG_COUNT=$((INDEX + 1))" \
-            "GIT_CONFIG_KEY_$INDEX=http.https://git.tak.gov/.extraHeader" \
-            "GIT_CONFIG_VALUE_$INDEX=Authorization: Basic $HEADER" \
+        # Older canonical Git images predate GIT_CONFIG_COUNT support.
+        PARAMETERS="${GIT_CONFIG_PARAMETERS:-} 'http.https://git.tak.gov/.extraHeader=Authorization: Basic $HEADER'"
+        env GIT_TERMINAL_PROMPT=0 "GIT_CONFIG_PARAMETERS=$PARAMETERS" \
             git clone --quiet --no-checkout "$URL" "$TARGET"
     else
         GIT_TERMINAL_PROMPT=0 git clone --quiet --no-checkout "$URL" "$TARGET"

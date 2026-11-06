@@ -175,3 +175,37 @@ class SdkShellContractTest(unittest.TestCase):
         result = self.run_prepare()
         self.assertNotEqual(0, result.returncode)
         self.assertEqual("synthetic", extra.read_text())
+
+    def test_clone_header_works_without_modern_git_config_count(self):
+        fixture_sdk = self.root / "fixture-sdk"
+        self.sdk.rename(fixture_sdk)
+        binary = self.root / "bin"
+        binary.mkdir()
+        git = binary / "git"
+        git.write_text("""#!/bin/sh
+set -eu
+unset GIT_CONFIG_COUNT
+if [ "$1" = clone ]; then
+    ACTUAL=$("$FIXTURE_REAL_GIT" config --get-urlmatch http.extraHeader https://git.tak.gov/)
+    [ "$ACTUAL" = "$FIXTURE_EXPECTED_HEADER" ] || exit 90
+    [ "$("$FIXTURE_REAL_GIT" config fixture.preserved)" = value ] || exit 91
+    exec "$FIXTURE_REAL_GIT" clone --quiet --no-checkout "$FIXTURE_SDK" "$5"
+fi
+exec "$FIXTURE_REAL_GIT" "$@"
+""")
+        git.chmod(0o700)
+        environment = os.environ.copy()
+        encoded = base64.b64encode(b"gitlab-ci-token:synthetic-token").decode()
+        environment.update({
+            "PATH": str(binary) + os.pathsep + os.environ["PATH"],
+            "FIXTURE_REAL_GIT": shutil.which("git"), "FIXTURE_SDK": str(fixture_sdk),
+            "FIXTURE_EXPECTED_HEADER": "Authorization: Basic " + encoded,
+            "CI_JOB_TOKEN": "synthetic-token",
+            "GIT_CONFIG_PARAMETERS": "'fixture.preserved=value'",
+        })
+        result = subprocess.run(["sh", str(self.root / "ci/prepare_sdk.sh")],
+                                env=environment, capture_output=True, text=True)
+        self.assertEqual(0, result.returncode, result.stderr)
+        config = (self.sdk / ".git/config").read_text()
+        self.assertNotIn("synthetic-token", config + result.stdout + result.stderr)
+        self.assertNotIn(encoded, config + result.stdout + result.stderr)
