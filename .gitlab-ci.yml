@@ -12,8 +12,16 @@ variables:
 
 stages:
   - test
+  - release
 
-validate:
+python_contracts:
+  stage: test
+  image: python:3.12-bookworm
+  script:
+    - python3 -B -m unittest discover -s ci -p 'test_*.py'
+  interruptible: true
+
+.android_job:
   stage: test
   image:
     name: ${TAK_REGISTRY_HOST}/devsecops/gradle-build-launcher:17-${GRADLE_BUILD_LAUNCHER_TAG}
@@ -22,13 +30,10 @@ validate:
   before_script:
     - !reference [.artifactory_service_create_token_no_depends_bash, before_script]
     - export ARTIFACTORY_USER="$GITLAB_USER_EMAIL" ARTIFACTORY_PASSWORD="$CI_JOB_ARTIFACTORY_TOKEN"
-    - |
-      if ! command -v python3 >/dev/null 2>&1; then
-        apt-get update -qq
-        apt-get install -y --no-install-recommends python3
-      fi
-    - python3 -B -m unittest discover -s ci -p 'test_*.py'
-    - python3 ci/prepare_sdk.py
+    - sh ci/prepare_sdk.sh
+
+validate:
+  extends: .android_job
   interruptible: true
   script:
     - chmod +x gradlew
@@ -42,3 +47,23 @@ validate:
       junit:
         - core/build/test-results/test/*.xml
         - app/build/test-results/testDebugUnitTest/*.xml
+
+main_release:
+  extends: .android_job
+  stage: release
+  before_script:
+    - !reference [.android_job, before_script]
+    - export WEARTAK_RELEASE_KEYSTORE_FILE="$CI_PROJECT_DIR/app/weartak.keystore"
+    - sh ci/prepare_signing.sh
+  script:
+    - ./gradlew --no-daemon :app:assembleRelease
+    - sh ci/package_release.sh
+  after_script:
+    - rm -f -- "$CI_PROJECT_DIR/app/weartak.keystore"
+  artifacts:
+    when: on_success
+    expire_in: 30 days
+    paths:
+      - app/build/outputs/lattice/release/
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true" && $CI_PIPELINE_SOURCE == "push"'

@@ -21,8 +21,10 @@ CoT dispatch, alerts, map injection, or host marker calls are implemented.
 
 First-phase foundation; not a deployed or operationally validated integration.
 Synthetic JVM/Android contract fixtures cover ingestion, lifecycle, errors,
-expiry, and source isolation. Debug and unsigned release builds are development
-outputs, **not approved install/release artifacts**. No live endpoint, credentials,
+expiry, and source isolation. Local debug and unsigned release builds are development
+outputs, **not approved install/release artifacts**. Protected-main CI separately
+requires the existing production signer before emitting an install candidate.
+No live endpoint, credentials,
 physical watch, host-signature compatibility, TLS deployment, accessibility
 screen-reader, or battery/endurance verification has been supplied.
 
@@ -114,19 +116,48 @@ Debug package:
 `CI_PIPELINE_IID` replaces `0` in CI and supplies its Android version code;
 base version remains `5.8.4`. Unsigned release validation output:
 `app\build\outputs\apk\release\app-release-unsigned.apk`.
-No signing key, installation, release, upload, or publication is configured.
+Without signing environment variables, local release output remains unsigned.
 Debug's ordinary development signature is not asserted compatible with host.
 GPL, project notices, and Apache license text are packaged under APK
 `assets/legal/`. Gradle distribution checksum is pinned in the wrapper.
 
-`.gitlab-ci.yml` builds/tests/lints but does not publish APKs. CI's ephemeral
-job token authenticates only to canonical TAK.gov SDK reads via a child-process
-Git header, not a credential-bearing URL or persistent Git config. SDK project
-must authorize this project's job-token access. The canonical Gradle launcher
-does not provide Python 3; CI installs it with apt in the ephemeral job container
-when absent. The image must provide apt, Git, JDK 17, and Android tools.
-Configuration validation alone does
-not verify runner execution or SDK source access.
+`.gitlab-ci.yml` separates Python/shell contract fixtures into the official
+`python:3.12-bookworm` image. Android validation and release use the canonical
+Gradle launcher, which lacks Python and has obsolete apt package indexes.
+The equivalent `ci/prepare_sdk.sh` entry point avoids installing packages into
+that image. Both preparation paths enforce the same source pin, clean checkout,
+and license; Android `preBuild` independently repeats these checks. CI's
+ephemeral job token authenticates only to canonical TAK.gov SDK reads via a
+child-process Git header, not a credential-bearing URL or persistent Git config.
+No SDK source is uploaded as a job artifact. The Gradle image must provide Git,
+JDK 17, and Android tools. Configuration validation alone does not verify runner
+execution or SDK source access.
+
+After both validation jobs pass, a push on the protected default branch runs
+`main_release` using the existing inherited protected/masked variables:
+`WEARTAK_RELEASE_KEYSTORE_B64`, `RELEASE_STORE_PASSWORD`, `RELEASE_KEY_ALIAS`,
+and `RELEASE_KEY_PASSWORD`. Missing/invalid signing fails explicitly, never
+falls back to debug signing. `WEARTAK_RELEASE_KEYSTORE_FILE` points Gradle to
+the restored ignored keystore, created with mode 0600 and removed by
+`after_script`; passwords remain environment-only, not signing-properties files
+or command-line arguments. No keys/secrets are committed or provisioned.
+
+Only a cryptographically verified, single-signer release APK with package
+`com.weartak.plugin.lattice`, version `5.8.4`, version code `CI_PIPELINE_IID`,
+and production certificate SHA-256
+`1579b600cd84e619e76a91c2db6b031938c999bc2aad926b9a51ec2b166d348d`
+is copied to the release artifact directory. Artifact name:
+`WearTAK-Plugin-Lattice-5.8.4-p<CI_PIPELINE_IID>.apk`, alongside its SHA-256
+checksum and source-SHA/pipeline/job/package/version/signer provenance.
+Artifacts expire after 30 days. This is CI artifact delivery, not a tagged
+release or automatic installation/activation. Installation still requires
+device-side package/version/signer compatibility checks and explicit user
+approval; preserving data never permits uninstall/downgrade/signature bypass.
+
+`python -B -m unittest discover -s ci -p "test_*.py"` runs Python preparation
+fixtures locally; Linux CI additionally runs shell pin/dirty-source, signing
+failure/cleanup, certificate/version, protected-branch, and provenance fixtures.
+Those Linux-specific fixtures explicitly skip on Windows, not count as passes.
 
 SDK project 6927 is private with inbound job-token scope enabled. With explicit
 user approval, project 6952 was added to its inbound project allowlist for CI

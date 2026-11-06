@@ -18,6 +18,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions { jvmTarget = "17" }
+    val releaseKeystore = providers.environmentVariable("WEARTAK_RELEASE_KEYSTORE_FILE").orNull
+    if (releaseKeystore != null) {
+        fun signingValue(name: String): String =
+            providers.environmentVariable(name).orNull?.takeIf(String::isNotBlank)
+                ?: error("Missing release signing variable: $name")
+        val releaseSigning = signingConfigs.create("weartakRelease") {
+            storeFile = rootProject.file(releaseKeystore).also {
+                check(it.isFile) { "WearTAK release keystore missing." }
+            }
+            storePassword = signingValue("RELEASE_STORE_PASSWORD")
+            keyAlias = signingValue("RELEASE_KEY_ALIAS")
+            keyPassword = signingValue("RELEASE_KEY_PASSWORD")
+        }
+        buildTypes.getByName("release").signingConfig = releaseSigning
+    }
     testOptions {
         unitTests.isIncludeAndroidResources = true
         unitTests.all {
