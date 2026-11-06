@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lattice</string>
+    <string name="plugin_description">Read-only Lattice point tracks. Foreground only; no map or outbound reporting.</string>
+    <string name="read_only_notice">Read-only point tracks. No position sharing, commands, or map injection. Reception stops when this screen closes.</string>
+    <string name="endpoint">HTTPS endpoint</string>
+    <string name="endpoint_hint">https://your-authorized-host</string>
+    <string name="token">Environment token (re-enter when saving)</string>
+    <string name="sandbox_token">Sandbox token (optional)</string>
+    <string name="ca">Private CA PEM (optional)</string>
+    <string name="ca_hint">Leave empty for system trust. Paste approved CA certificates only.</string>
+    <string name="save">Save configuration</string>
+    <string name="forget">Forget configuration</string>
+    <string name="connect">Receive tracks</string>
+    <string name="disconnect">Stop reception</string>
+    <string name="saved">Configuration encrypted on this device. Enable plugin in WearTAK, then tap Receive tracks.</string>
+    <string name="save_failed">Configuration unavailable. Check HTTPS origin, tokens, CA certificates, and device keystore.</string>
+    <string name="forgotten">Configuration removed. Reception stopped.</string>
+    <string name="host_inactive">Enable Lattice plugin in WearTAK before receiving.</string>
+    <string name="stopped">Reception stopped. Tracks cleared.</string>
+    <string name="connecting">Connecting. No tracks verified yet.</string>
+    <string name="receiving">Receiving partial view. Current point tracks: %1$d. Snapshot completion not signaled by API.</string>
+    <string name="closing">Previous connection closing. Retry shortly.</string>
+    <string name="auth_failed">Authorization denied. Verify endpoint, environment token, and sandbox token; then retry.</string>
+    <string name="tls_failed">TLS verification failed. Check hostname and approved private CA; then retry.</string>
+    <string name="network_failed">Connection lost or unavailable. Tracks cleared. Tap Receive tracks to reconnect from scratch.</string>
+    <string name="data_failed">Invalid, unsupported, or oversized stream data. Tracks cleared. Verify API contract and point-track data before retrying.</string>
+    <string name="timeout">No verified stream event for 45 seconds. Tracks cleared. Retry reception.</string>
+    <string name="rate_failed">Stream exceeded 100 events per second. Tracks cleared. Narrow upstream data before retrying.</string>
+    <string name="track_empty">No current point tracks. Expired and unsupported entities are not displayed.</string>
+    <string name="track_detail">%1$s\n%2$s / %3$s / %4$s\n%5$.5f, %6$.5f\nObserved %7$s\nExpires %8$s\nID %9$s</string>
+    <string name="simulated">SIMULATED: %1$s</string>
+    <string name="scope_notice">Only authorized, fresh TRACK or ASSET entities with point coordinates are shown. Maximum 256 tracks / 512 identities per session; maximum age 120 seconds. Unsupported shapes stay hidden.</string>
+    <string name="load_failed">Saved configuration could not be decrypted. Forget configuration and enter it again.</string>
+    <string name="missing_configuration">Save an authorized endpoint and token first.</string>
+    <string name="http_failed">Server rejected read subscription (HTTP %1$d). Verify API access before retrying.</string>
+    <string name="ignored">Unsupported entities hidden: %1$d</string>
+</resources>

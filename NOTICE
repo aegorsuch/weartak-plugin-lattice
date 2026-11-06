@@ -1,0 +1,51 @@
+WearTAK Plugin Lattice
+Original code: GPL-3.0-or-later. See LICENSE.
+
+WearTAK Plugin SDK
+Source: https://git.tak.gov/weartak-plugins/weartak-plugin-sdk
+Pinned revision: af3f6763d75265415a324f8a616c7b00747e182a
+Original SDK code: GPL-3.0-or-later, expressly declared in canonical README.
+SDK third-party components keep their own licenses and notices.
+No prebuilt template AAR is vendored.
+
+Gradle 8.10.2 wrapper/tooling
+https://github.com/gradle/gradle
+Copyright 2015 the original author or authors (wrapper launcher notices).
+Apache License 2.0; launcher notices preserved verbatim.
+
+Kotlin 2.0.21 and kotlinx.serialization-json/core 1.7.3
+https://github.com/JetBrains/kotlin
+https://github.com/Kotlin/kotlinx.serialization
+Copyright JetBrains s.r.o. and Kotlin Programming Language contributors.
+Apache License 2.0.
+
+AndroidX AppCompat 1.7.0 and transitive AndroidX components
+https://android.googlesource.com/platform/frameworks/support/
+Copyright The Android Open Source Project.
+Apache License 2.0; dependency artifacts retain their notices.
+
+Development/test dependencies include Android Gradle Plugin 8.7.2
+(Apache License 2.0), Robolectric 4.13 (MIT), JUnit 4.13.2 (Eclipse Public
+License 1.0), and Hamcrest 1.3 (BSD-3-Clause). These test tools are not
+plugin runtime dependencies. Upstream artifacts retain their licenses.
+
+Apache License 2.0 text is in third_party/Apache-2.0.txt.
+The GPL declaration does not relicense third-party work or grant trademarks.
+No Anduril SDK binaries or generated SDK source are included.
+Authorized Lattice service/data use remains subject to its
+applicable terms: https://developer.anduril.com/license.md .
+
+Anduril company symbol (launcher/package/adaptive/round icon)
+Source: https://www.anduril.com/assets/favicon/favicon-512.xxjGh-Lg5Y.png
+Official website: https://www.anduril.com/
+Original PNG SHA-256:
+7765cad48e3672e4e301c0b06dded8667be7fde307d69cca82ac0ce933ce43bb
+The original asset is preserved byte-for-byte; Android drawables add padding
+and scaling only. Company-icon fallback requested by the user; no standalone
+Lattice product icon was verified in checked public official sources.
+User-attested permission from Lattice for this plugin's icon use.
+Artwork and trademarks remain the property of their respective rights holders.
+This artwork is not offered under the project's GPL license; permission here
+does not establish a general grant for other uses or imply vendor endorsement.
+Public website availability and the Lattice SDK license alone grant no logo
+or trademark rights.
